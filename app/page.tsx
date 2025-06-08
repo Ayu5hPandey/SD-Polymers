@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Hero from "@/components/Hero";
 import AppleStyleSlider from "@/components/AppleStyleSlider";
+import PartnersSection from "@/components/partnership";
+import Markets from "@/components/market";
 
 export default function Home() {
   return (
@@ -11,6 +13,8 @@ export default function Home() {
       backgroundImage="https://newpaceproductions.com/wp-content/uploads/video_production_heroimage.jpg"
       />
       <AppleStyleSlider/>
+      <Markets/>
+      
     </div>
   );
 }
