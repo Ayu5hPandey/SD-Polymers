@@ -1,47 +1,64 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from "@/components/lib/utils";
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// Example slider data (lookalike content, open images)
+// Enhanced slider data with more professional content
 const slides = [
   {
-    image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80",
-    title: "MURDERBOT",
-    description: "Sci-Fi, a robot helper finds her will—and passion for cool options.",
-    button: "Stream now"
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
+    title: "ADVANCED POLYMERS",
+    description: "Next-generation polymer solutions engineered for superior performance and durability.",
+    button: "Explore Solutions",
+    category: "Innovation"
   },
   {
-    image: "https://images.unsplash.com/photo-1526178613658-3f1622045557?auto=format&fit=crop&w=800&q=80",
-    title: "YOUR NEXT TRIP",
-    description: "Inspiring journeys for every wanderer. Adventure awaits.",
-    button: "Watch now"
+    image: "https://images.unsplash.com/photo-1565514020179-026b92b84bb6?auto=format&fit=crop&w=1200&q=80",
+    title: "SUSTAINABLE MATERIALS",
+    description: "Eco-friendly polymer compounds designed for a greener future without compromising quality.",
+    button: "Learn More",
+    category: "Sustainability"
   },
   {
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80",
-    title: "GREEN FITNESS",
-    description: "Quick calm comfort for busy days. Get active anywhere.",
-    button: "Try Fitness+"
+    image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=1200&q=80",
+    title: "CUSTOM FORMULATIONS",
+    description: "Tailored polymer solutions crafted to meet your specific industrial requirements.",
+    button: "Get Custom Quote",
+    category: "Custom Solutions"
   },
   {
-    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
-    title: "MUSIC BEATS",
-    description: "Seth Rogen & Zane Lowe: Interviews that connect. Exclusive playlists.",
-    button: "Listen now"
+    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1200&q=80",
+    title: "QUALITY ASSURANCE",
+    description: "Rigorous testing and quality control ensuring consistent, reliable polymer products.",
+    button: "View Standards",
+    category: "Quality"
   },
   {
-    image: "https://images.unsplash.com/photo-1424746219973-8fe3bd07d8e3?auto=format&fit=crop&w=800&q=80",
-    title: "GOLF TOUR WIN GOLF",
-    description: "Challenge yourself: new digital courses each week.",
-    button: "Explore now"
+    image: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=1200&q=80",
+    title: "TECHNICAL SUPPORT",
+    description: "Expert guidance and comprehensive support throughout your polymer implementation journey.",
+    button: "Contact Experts",
+    category: "Support"
   }
 ];
 
 export default function AppleStyleSlider() {
   const [current, setCurrent] = useState(0);
-  const visibleSlides = 3;
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const slideCount = slides.length;
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slideCount);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, slideCount]);
 
   // Helper: get indices for prev, center, next
   function getVisibleIndices(centerIdx: number) {
@@ -51,109 +68,241 @@ export default function AppleStyleSlider() {
   }
   const visibleIndices = getVisibleIndices(current);
 
-  // On next/prev, just change current, center stays fixed
-  const goTo = (idx: number) => setCurrent(idx);
+  // Navigation functions
+  const goTo = (idx: number) => {
+    setCurrent(idx);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000); // Resume auto-play after 10s
+  };
   const prev = () => goTo((current - 1 + slideCount) % slideCount);
   const next = () => goTo((current + 1) % slideCount);
 
-  // Card dimensions: large and keep aspect ratio
-  // Use responsive units for width, but clamp for min/max
-  // 8.5:5.5 ratio
-  const cardWidth = 480; // px, tweak as needed for your layout
-  const cardHeight = Math.round(cardWidth * 5.5 / 8.5); // 8.5:5.5 ratio
-
   return (
-    <div className="relative w-screen flex flex-col items-center bg-[#1d1d1f] pt-8 pb-8 px-0 overflow-x-hidden">
-      {/* Controls */}
-      <button
-        className="absolute left-0 top-1/2 z-10 bg-black/70 rounded-full p-2 text-white hover:bg-black/90 hidden md:block"
-        onClick={prev}
-        aria-label="Previous"
-        style={{ transform: "translateY(-50%)" }}
-      >
-        <ChevronLeft size={32} />
-      </button>
-      <button
-        className="absolute right-0 top-1/2 z-10 bg-black/70 rounded-full p-2 text-white hover:bg-black/90 hidden md:block"
-        onClick={next}
-        aria-label="Next"
-        style={{ transform: "translateY(-50%)" }}
-      >
-        <ChevronRight size={32} />
-      </button>
-      {/* Slider: only 3 cards visible and centered */}
-      <div
-        className="relative flex justify-center items-center w-full max-w-[1520px] mx-auto"
-        style={{ minHeight: cardHeight + 48 + 'px' }} // card plus room for shadows/buttons
-      >
-        {visibleIndices.map((i, idx) => {
-          // Animate left (0), center (1), right (2)
-          const isCenter = idx === 1;
-          const isSide = idx !== 1;
-          // Layout: arrange cards with absolute positioning, so center always centered
-          // Use responsive units for width/height
-          // For left/right, use clamp to keep responsive
-          // The lefts array is in px, but you can use calc for responsive
-          const lefts = [
-            `calc(50% - ${cardWidth * 1.06}px)`, // left card (scaled slightly)
-            `calc(50% - ${cardWidth/2}px)`,
-            `calc(50% + ${cardWidth * 0.06}px)`, // right card (scaled slightly)
-          ];
-          return (
-            <div
-              key={slides[i].title + i}
-              className={cn(
-                "absolute transition-all duration-400 ease-in-out cursor-pointer",
-                isCenter ? "z-20 scale-110 opacity-100 shadow-2xl" : "z-10 scale-100 opacity-55"
-              )}
-              style={{
-                width: 'clamp(320px, 32vw, 540px)',
-                height: 'clamp(180px, 20vw, 350px)',
-                aspectRatio: '8.5 / 5.5',
-                borderRadius: '1.25rem',
-                overflow: 'hidden',
-                left: lefts[idx],
-                boxShadow: isCenter ? '0px 12px 32px 6px #0008' : '',
-                transition: 'left 0.45s cubic-bezier(0.5,1,0.5,1), transform 0.35s, opacity 0.45s',
-                pointerEvents: isCenter ? 'auto' : 'auto',
-                opacity: isCenter ? 1 : 0.55,
-              }}
-              onClick={() => isSide && goTo(i)}
-              tabIndex={0}
-            >
-              <img
-                src={slides[i].image}
-                className="w-full h-full object-cover pointer-events-none select-none"
-                alt={slides[i].title}
-                draggable={false}
-              />
-              <div className="absolute bottom-0 p-6 w-full bg-gradient-to-t from-black/75 to-black/0 text-white pointer-events-none">
-                <div className="font-bold text-xl md:text-2xl drop-shadow-lg">{slides[i].title}</div>
-                <div className="text-sm md:text-base mb-2 drop-shadow">{slides[i].description}</div>
-                <button
-                  className="bg-white/90 text-black px-4 py-2 mt-2 rounded-xl font-semibold shadow hover:bg-white"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  {slides[i].button}
-                </button>
-              </div>
-            </div>
-          );
-        })}
+    <div className="relative w-full bg-gradient-to-b from-gray-50 to-white py-16 overflow-hidden">
+      {/* Section Header */}
+      <div className="container mx-auto px-4 mb-12">
+        <motion.div 
+          className="text-center max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <div className="inline-flex items-center bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+            <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>
+            Our Products & Services
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent mb-6">
+            Innovative Polymer
+            <span className="block text-yellow-600">Solutions</span>
+          </h2>
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+            Discover our comprehensive range of advanced polymer products and services, 
+            engineered to meet the evolving demands of modern industry.
+          </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-8 rounded-full"></div>
+        </motion.div>
       </div>
-      {/* Dots */}
-      <div className="flex space-x-2 mt-6">
+
+      {/* Enhanced Controls */}
+      <div className="absolute left-4 md:left-8 top-1/2 z-20 transform -translate-y-1/2">
+        <motion.button
+          className="bg-white/90 backdrop-blur-sm rounded-full p-3 text-gray-800 hover:bg-white hover:scale-110 shadow-lg border border-gray-200 transition-all duration-300"
+          onClick={prev}
+          aria-label="Previous slide"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronLeft size={24} />
+        </motion.button>
+      </div>
+      
+      <div className="absolute right-4 md:right-8 top-1/2 z-20 transform -translate-y-1/2">
+        <motion.button
+          className="bg-white/90 backdrop-blur-sm rounded-full p-3 text-gray-800 hover:bg-white hover:scale-110 shadow-lg border border-gray-200 transition-all duration-300"
+          onClick={next}
+          aria-label="Next slide"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronRight size={24} />
+        </motion.button>
+      </div>
+
+      {/* Auto-play control */}
+      <div className="absolute top-4 right-4 z-20">
+        <motion.button
+          className="bg-white/90 backdrop-blur-sm rounded-full p-2 text-gray-800 hover:bg-white shadow-lg border border-gray-200 transition-all duration-300"
+          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+          aria-label={isAutoPlaying ? "Pause slideshow" : "Play slideshow"}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {isAutoPlaying ? (
+            <div className="w-4 h-4 flex space-x-1">
+              <div className="w-1 h-4 bg-gray-800 rounded"></div>
+              <div className="w-1 h-4 bg-gray-800 rounded"></div>
+            </div>
+          ) : (
+            <Play size={16} className="ml-0.5" />
+          )}
+        </motion.button>
+      </div>
+
+      {/* Enhanced Slider */}
+      <div className="relative flex justify-center items-center w-full max-w-7xl mx-auto px-4">
+        <div 
+          className="relative w-full"
+          style={{ height: 'clamp(300px, 25vw, 450px)' }}
+        >
+          <AnimatePresence mode="wait">
+            {visibleIndices.map((slideIndex, position) => {
+              const isCenter = position === 1;
+              const isLeft = position === 0;
+              const isRight = position === 2;
+              
+              let xOffset = '0%';
+              let scale = 1;
+              let zIndex = 10;
+              let opacity = 0.4;
+              
+              if (isCenter) {
+                xOffset = '0%';
+                scale = 1.1;
+                zIndex = 30;
+                opacity = 1;
+              } else if (isLeft) {
+                xOffset = '-85%';
+                scale = 0.85;
+                zIndex = 20;
+                opacity = 0.6;
+              } else if (isRight) {
+                xOffset = '85%';
+                scale = 0.85;
+                zIndex = 20;
+                opacity = 0.6;
+              }
+
+              return (
+                <motion.div
+                  key={`${slideIndex}-${position}`}
+                  className="absolute top-0 left-1/2 cursor-pointer"
+                  style={{
+                    width: 'clamp(280px, 35vw, 500px)',
+                    height: '100%',
+                    borderRadius: '1.5rem',
+                    overflow: 'hidden',
+                    zIndex,
+                  }}
+                  initial={{ 
+                    x: '-50%',
+                    scale: 0.8,
+                    opacity: 0
+                  }}
+                  animate={{ 
+                    x: `calc(-50% + ${xOffset})`,
+                    scale,
+                    opacity
+                  }}
+                  transition={{ 
+                    duration: 0.6,
+                    ease: [0.25, 0.46, 0.45, 0.94]
+                  }}
+                  onClick={() => !isCenter && goTo(slideIndex)}
+                  whileHover={!isCenter ? { scale: scale * 1.05 } : {}}
+                >
+                  <div className="relative w-full h-full group">
+                    <img
+                      src={slides[slideIndex].image}
+                      className="w-full h-full object-cover"
+                      alt={slides[slideIndex].title}
+                      draggable={false}
+                    />
+                    
+                    {/* Enhanced Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    
+                    {/* Category Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-yellow-500/90 text-gray-900 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                        {slides[slideIndex].category}
+                      </span>
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                      <motion.h3 
+                        className="font-bold text-xl md:text-2xl mb-2 drop-shadow-lg"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: isCenter ? 1 : 0.8, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        {slides[slideIndex].title}
+                      </motion.h3>
+                      
+                      <motion.p 
+                        className="text-sm md:text-base mb-4 text-gray-200 drop-shadow leading-relaxed"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: isCenter ? 1 : 0.7, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        {slides[slideIndex].description}
+                      </motion.p>
+                      
+                      <motion.button
+                        className="bg-white/95 hover:bg-white text-gray-900 px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center group"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: isCenter ? 1 : 0.8, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {slides[slideIndex].button}
+                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Enhanced Progress Indicators */}
+      <div className="flex justify-center items-center space-x-3 mt-8">
         {slides.map((_, i) => (
-          <button
+          <motion.button
             key={i}
             className={cn(
-              "h-3 w-3 rounded-full",
-              i === current ? "bg-blue-400" : "bg-neutral-500/40"
+              "relative overflow-hidden rounded-full transition-all duration-300",
+              i === current 
+                ? "w-12 h-3 bg-yellow-500" 
+                : "w-3 h-3 bg-gray-300 hover:bg-gray-400"
             )}
             onClick={() => goTo(i)}
             aria-label={`Go to slide ${i + 1}`}
-          />
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {i === current && isAutoPlaying && (
+              <motion.div
+                className="absolute top-0 left-0 h-full bg-yellow-600"
+                initial={{ width: '0%' }}
+                animate={{ width: '100%' }}
+                transition={{ duration: 5, ease: 'linear' }}
+                key={current} // Reset animation when slide changes
+              />
+            )}
+          </motion.button>
         ))}
+      </div>
+
+      {/* Slide Counter */}
+      <div className="text-center mt-4">
+        <span className="text-sm text-gray-500 font-medium">
+          {current + 1} / {slideCount}
+        </span>
       </div>
     </div>
   );
