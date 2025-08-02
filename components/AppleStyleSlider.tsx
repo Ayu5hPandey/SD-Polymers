@@ -1,41 +1,43 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { cn } from "@/components/lib/utils";
+import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Play, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from "next/navigation";
+
 
 // Enhanced slider data with more professional content
 const slides = [
-  {
+  {slug: "advanced-polymers",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
     title: "ADVANCED POLYMERS",
     description: "Next-generation polymer solutions engineered for superior performance and durability.",
     button: "Explore Solutions",
     category: "Innovation"
   },
-  {
+  { slug: "sustainable-materials",
     image: "https://images.unsplash.com/photo-1565514020179-026b92b84bb6?auto=format&fit=crop&w=1200&q=80",
     title: "SUSTAINABLE MATERIALS",
     description: "Eco-friendly polymer compounds designed for a greener future without compromising quality.",
     button: "Learn More",
     category: "Sustainability"
   },
-  {
+  { slug: "custom-formulations",
     image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=1200&q=80",
     title: "CUSTOM FORMULATIONS",
     description: "Tailored polymer solutions crafted to meet your specific industrial requirements.",
     button: "Get Custom Quote",
     category: "Custom Solutions"
   },
-  {
+  {slug: "quality-assurance",
     image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1200&q=80",
     title: "QUALITY ASSURANCE",
     description: "Rigorous testing and quality control ensuring consistent, reliable polymer products.",
     button: "View Standards",
     category: "Quality"
   },
-  {
+  {slug: "technical-support",
     image: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=1200&q=80",
     title: "TECHNICAL SUPPORT",
     description: "Expert guidance and comprehensive support throughout your polymer implementation journey.",
@@ -45,6 +47,8 @@ const slides = [
 ];
 
 export default function AppleStyleSlider() {
+  const router = useRouter();
+
   const [current, setCurrent] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const slideCount = slides.length;
@@ -118,15 +122,16 @@ export default function AppleStyleSlider() {
       </div>
       
       <div className="absolute right-4 md:right-8 top-1/2 z-20 transform -translate-y-1/2">
-        <motion.button
-          className="bg-white/90 backdrop-blur-sm rounded-full p-3 text-gray-800 hover:bg-white hover:scale-110 shadow-lg border border-gray-200 transition-all duration-300"
-          onClick={next}
-          aria-label="Next slide"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <ChevronRight size={24} />
-        </motion.button>
+      <motion.button
+  className="bg-white/90 backdrop-blur-sm rounded-full p-3 text-gray-800 hover:bg-white hover:scale-110 shadow-lg border border-gray-200 transition-all duration-300"
+  onClick={next}
+  aria-label="Next slide"
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.95 }}
+>
+  <ChevronRight size={24} />
+</motion.button>
+
       </div>
 
       {/* Auto-play control */}
@@ -250,16 +255,18 @@ export default function AppleStyleSlider() {
                       </motion.p>
                       
                       <motion.button
-                        className="bg-white/95 hover:bg-white text-gray-900 px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center group"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: isCenter ? 1 : 0.8, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        {slides[slideIndex].button}
-                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </motion.button>
+  className="bg-white/95 hover:bg-white text-gray-900 px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center group"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: isCenter ? 1 : 0.8, y: 0 }}
+  transition={{ delay: 0.4 }}
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  onClick={() => router.push(`/products/${slides[slideIndex].slug}`)} // ✅ This works inside the map
+>
+  {slides[slideIndex].button}
+  <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+</motion.button>
+
                     </div>
                   </div>
                 </motion.div>

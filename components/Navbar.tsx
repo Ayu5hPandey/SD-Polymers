@@ -164,7 +164,7 @@ const Navbar = () => {
             </Link>
 
             {/* Enhanced Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-2">
+            <nav className=" lg:flex items-center space-x-2">
               <motion.div whileHover={{ scale: 1.02 }}>
                 <Link 
                   href="/about" 

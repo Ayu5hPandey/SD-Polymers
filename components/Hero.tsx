@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { cn } from '@/components/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface HeroProps {
   title: string;
