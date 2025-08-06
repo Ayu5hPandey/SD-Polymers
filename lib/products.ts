@@ -26,6 +26,7 @@ export const products = [
         }
       ]
     },
+    
     // Add more products here
   ];
   

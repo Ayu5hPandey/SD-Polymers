@@ -4,6 +4,7 @@ import AppleStyleSlider from "@/components/AppleStyleSlider";
 import PartnersSection from "@/components/partnership";
 import Markets from "@/components/market";
 
+
 export default function Home() {
   return (
     <div>
