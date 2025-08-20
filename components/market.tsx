@@ -10,33 +10,32 @@ interface MarketItem {
 }
 
 const markets: MarketItem[] = [
-  {
-    title: 'Poly Vinyl Chloride',
-    image: '/adhesives.jpg',
-    description: 'Advanced bonding solutions for industrial strength.',
-  },
-  {
-    title: 'Appliances',
-    description: 'Making lives more effective, one appliance at a time.',
-    image: '/appliances.jpg',
-  },
-  {
-    title: 'Automotive',
-    image: '/automotive.jpg',
-    description: 'Driving innovation with durable polymers.',
-  },
-  {
-    title: 'Compounding',
-    image: '/compounding.jpg',
-    description: 'Customized material blending for performance.',
-  },
-  {
-    title: 'Electronics',
-    image: '/electronics.jpg',
-    description: 'Precision materials for high-tech components.',
-  },
-];
-
+    {
+      title: 'Electrical & Electronics',
+      image: '/electrical.webp', // replace with your actual image path
+      description: 'Supplying insulated wires, connectors, and protective solutions for safe, reliable electrical installations.',
+    },
+    {
+      title: 'Automotive & Transportation',
+      image: '/transport.png', // replace with your actual image path
+      description: 'Providing durable connectors and harness assemblies designed for vehicle wiring and power distribution.',
+    },
+    {
+      title: 'Industrial Machinery & Automation',
+      image: '/machine.png', // replace with your actual image path
+      description: 'Delivering precision wiring, sleeves, and connectors for efficient industrial control and automation systems.',
+    },
+    {
+      title: 'Telecom & Networking',
+      image: '/communication.png', // replace with your actual image path
+      description: 'Offering high-quality cables and accessories for seamless data, voice, and signal transmission.',
+    },
+    {
+      title: 'Appliance & Consumer Goods',
+      image: '/appliance.jpg', // replace with your actual image path
+      description: 'Equipping appliances with compact, reliable wiring harnesses and insulation components for enhanced performance.',
+    },
+  ];  
 const Markets: FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -78,15 +77,14 @@ const Markets: FC = () => {
                 onClick={() => handleClick(idx)}
                 className="relative group min-w-[220px] md:min-w-[250px] max-w-[250px] h-[340px] md:h-[350px] border border-white/20 rounded overflow-hidden hover:border-yellow-500 transition cursor-pointer"
               >
-                <div className="relative w-full h-full"> {/* 👈 Add this wrapper */}
-                  <Image
-                    src={market.image}
-                    alt={market.title}
-                    layout="fill"
-                    objectFit="cover"
-                    className="opacity-80"
-                  />
-                </div>
+             <Image
+  src={market.image}
+  alt={market.title}
+  fill
+  unoptimized // ✅ This line allows ANY image URL
+  className="object-cover opacity-80"
+/>
+
                 {/* Overlay Tile */}
                 <div
                   className={`absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent transform transition-all duration-300

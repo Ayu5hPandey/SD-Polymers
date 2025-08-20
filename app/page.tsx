@@ -10,7 +10,7 @@ export default function Home() {
       <Hero 
       title="In the Business of Better"
       subtitle="We have the broadest portfolio and the information you need – right at your fingertips."
-      backgroundImage="https://newpaceproductions.com/wp-content/uploads/video_production_heroimage.jpg"
+      backgroundImage="/S.D Polymers.png"
       />
       <AppleStyleSlider/>
       <Markets/>
