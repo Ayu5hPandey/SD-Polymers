@@ -9,42 +9,71 @@ import { useRouter } from "next/navigation";
 
 // Enhanced slider data with more professional content
 const slides = [
-  {slug: "advanced-polymers",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
-    title: "ADVANCED POLYMERS",
-    description: "Next-generation polymer solutions engineered for superior performance and durability.",
-    button: "Explore Solutions",
-    category: "Innovation"
-  },
-  { slug: "sustainable-materials",
-    image: "https://images.unsplash.com/photo-1565514020179-026b92b84bb6?auto=format&fit=crop&w=1200&q=80",
-    title: "SUSTAINABLE MATERIALS",
-    description: "Eco-friendly polymer compounds designed for a greener future without compromising quality.",
-    button: "Learn More",
-    category: "Sustainability"
-  },
-  { slug: "custom-formulations",
-    image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=1200&q=80",
-    title: "CUSTOM FORMULATIONS",
-    description: "Tailored polymer solutions crafted to meet your specific industrial requirements.",
-    button: "Get Custom Quote",
-    category: "Custom Solutions"
-  },
-  {slug: "quality-assurance",
-    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1200&q=80",
-    title: "QUALITY ASSURANCE",
-    description: "Rigorous testing and quality control ensuring consistent, reliable polymer products.",
-    button: "View Standards",
-    category: "Quality"
-  },
-  {slug: "technical-support",
-    image: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=1200&q=80",
-    title: "TECHNICAL SUPPORT",
-    description: "Expert guidance and comprehensive support throughout your polymer implementation journey.",
-    button: "Contact Experts",
-    category: "Support"
-  }
-];
+    {
+      slug: "PVC Granules",
+      image: "Granules.png",
+      title: "PVC GRANULES",
+      description: "High-quality ROHS/REACH-compliant PVC granules for durable plastic component manufacturing.",
+      button: "View Granule Options",
+      category: "Raw Materials"
+    },
+    {
+      slug: "Cable Ties",
+      image: "Cable Tie.png",
+      title: "CABLE TIES",
+      description: "Strong and flexible fasteners for organizing and securing wiring bundles.",
+      button: "Browse Cable Ties",
+      category: "Cable Management"
+    },
+    {
+      slug: "Silicone Braided Wire",
+      image: "elec.png",
+      title: "SILICONE BRAIDED WIRE",
+      description: "Heat-resistant fiberglass braided wires for appliances and industrial machinery.",
+      button: "Explore Wire Types",
+      category: "Wiring Solutions"
+    },
+    {
+      slug: "CAT 5 Cable",
+      image: "CAT5.png",
+      title: "CAT 5 CABLE",
+      description: "High-speed data transmission cable for telecom and networking applications.",
+      button: "See Networking Cables",
+      category: "Telecom & Networking"
+    },
+    {
+      slug: "PVC Electrical Tape",
+      image: "Tape.png",
+      title: "PVC ELECTRICAL TAPE",
+      description: "Flexible insulation tape for electrical wiring protection.",
+      button: "Shop Electrical Tape",
+      category: "Electrical Insulation"
+    },
+    {
+      slug: "Terminal PVC Sleeves",
+      image: "DipMoulding Cap.png",
+      title: "TERMINAL PVC SLEEVES",
+      description: "Durable dip-moulded sleeves and covers for electrical terminal insulation.",
+      button: "Discover Sleeves & Covers",
+      category: "Dip Moulded Components"
+    },
+    {
+      slug: "PVC Sleeves",
+      image: "PVC Sleeve.jpg",
+      title: "PVC SLEEVES (HST/UL/NON-UL)",
+      description: "Protective sleeves for wire harnessing in electrical and industrial applications.",
+      button: "View Sleeve Sizes",
+      category: "Electrical Insulation"
+    },
+    {
+      slug: "Wire Harness Connectors",
+      image: "wire harness connectors.png",
+      title: "WIRE HARNESS CONNECTORS",
+      description: "Reliable connectors, grommets, and accessories for automotive, appliance, and industrial wiring harnesses.",
+      button: "Explore Connector Range",
+      category: "Connectivity Solutions"
+    }
+  ];  
 
 export default function AppleStyleSlider() {
   const router = useRouter();
