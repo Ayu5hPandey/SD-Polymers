@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 
 export async function POST(request: Request) {
   try {
-    const { name, email, message } = await request.json();
+    const { name, email, phone,  company, message } = await request.json();
 
     // Setup transporter
     const transporter = nodemailer.createTransport({
@@ -20,9 +20,11 @@ export async function POST(request: Request) {
       to: process.env.RECEIVER_EMAIL, // where YOU receive the mail
       subject: `New Contact Form Submission from ${name}`,
       text: `
-        Name: ${name}
-        Email: ${email}
-        Message: ${message}
+      Name: ${name}
+      Email: ${email}
+      Phone: ${phone}
+      Company: ${company}
+      Message: ${message}
       `,
     };
 
