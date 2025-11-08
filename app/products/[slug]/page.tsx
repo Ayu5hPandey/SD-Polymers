@@ -3,15 +3,18 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 
 interface Props {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 }
 
-export default function ProductPage({ params }: Props) {
-  const product = products.find(p => p.slug === params.slug);
+export default async function ProductPage({ params }: Props) {
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug); // ✅ Fix URL encoding
+  const product = products.find((p) => p.slug === decodedSlug);
 
-  if (!product) return notFound();
+  if (!product) {
+    console.log("❌ Product not found for slug:", decodedSlug);
+    return notFound();
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
@@ -39,7 +42,9 @@ export default function ProductPage({ params }: Props) {
                 <h4 className="font-medium mt-2">Specifications:</h4>
                 <ul className="list-disc list-inside">
                   {Object.entries(variant.specs).map(([key, value]) => (
-                    <li key={key}><strong>{key}:</strong> {value}</li>
+                    <li key={key}>
+                      <strong>{key}:</strong> {value}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -49,4 +54,10 @@ export default function ProductPage({ params }: Props) {
       </div>
     </div>
   );
+}
+
+export function generateStaticParams() {
+  return products.map((product) => ({
+    slug: encodeURIComponent(product.slug), // ✅ Match encoded route
+  }));
 }
