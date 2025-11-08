@@ -1,6 +1,6 @@
 export const products = [
     {
-      slug: "advanced-polymers",
+      slug: "PVC Granules",
       title: "Advanced Polymers",
       description: "Next-generation polymer solutions...",
       variants: [
