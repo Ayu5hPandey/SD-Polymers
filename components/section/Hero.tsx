@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'; // Make sure this path is correct, e.g., '@/lib/utils'
 
 interface HeroProps {
   title: string;
@@ -26,7 +26,7 @@ const Hero = ({
 
   return (
     <div className={cn("relative w-full h-[85vh] flex items-center overflow-hidden", className)}>
-      {/* Background Image with Overlay */}
+      {/* Background Image with Overlay - THEMED */}
       <div className="absolute inset-0 w-full h-full">
         <Image
           src={backgroundImage}
@@ -37,14 +37,16 @@ const Hero = ({
           sizes="100vw"
           quality={90}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-black/50"></div>
+        {/* ✅ THEMED: Overlay changed from black to theme's dark blue */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background-dark/70 via-background-card/60 to-background-dark/50"></div>
       </div>
 
       {/* Content Container */}
       <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
         <div className="max-w-3xl">
           <motion.h1 
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-8"
+            // ✅ THEMED: Text color updated
+            className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-light leading-tight mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ 
               opacity: loaded ? 1 : 0, 
@@ -62,11 +64,13 @@ const Hero = ({
               width: loaded ? '3rem' : 0 
             }}
             transition={{ duration: 0.4, delay: 0.6 }}
-            className="h-1 bg-yellow-500 mb-6"
+            // ✅ THEMED: Accent line changed from yellow to secondary (teal green)
+            className="h-1 bg-secondary mb-6"
           />
           
           <motion.p 
-            className="text-lg md:text-xl text-gray-200 max-w-2xl"
+            // ✅ THEMED: Text color updated
+            className="text-lg md:text-xl text-text-secondary max-w-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ 
               opacity: loaded ? 1 : 0, 

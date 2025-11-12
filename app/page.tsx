@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Hero from "@/components/Hero";
-import AppleStyleSlider from "@/components/AppleStyleSlider";
-import PartnersSection from "@/components/partnership";
-import Markets from "@/components/market";
+import Hero from "@/components/section/Hero";
+import AppleStyleSlider from "@/components/ui/AppleStyleSlider";
+import PartnersSection from "@/components/section/partnership";
+import Markets from "@/components/section/marketlist";
 
 
 export default function Home() {

@@ -1,14 +1,22 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
-
-
-
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
+  // --- ADD THIS 'images' BLOCK ---
   images: {
-    domains: ['newpaceproductions.com'],
+    dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
+  // --- END OF BLOCK ---
+
+  // You might have other settings here, like reactStrictMode: true
+  // Just add the 'images' block alongside them.
 };
 
-module.exports = nextConfig;
-
+export default nextConfig;
