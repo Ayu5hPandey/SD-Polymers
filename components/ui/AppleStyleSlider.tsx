@@ -353,9 +353,7 @@ import { ChevronLeft, ChevronRight, Play, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from "next/navigation";
 
-
 const slides = [
-  // ... (slide data remains the same)
   {
     slug: "pvc-granules",
     image: "Granules.png",
@@ -375,7 +373,7 @@ const slides = [
   {
     slug: "silicone-braided-wire",
     image: "elec.png",
-    title: "SILICONE BRAIDED WIRE",
+    title: "SILICONE WIRE",
     description: "Heat-resistant fiberglass braided wires for appliances and industrial machinery.",
     button: "Explore Wire Types",
     category: "Wiring Solutions"
@@ -386,23 +384,23 @@ const slides = [
     title: "CAT 5 CABLE",
     description: "High-speed data transmission cable for telecom and networking applications.",
     button: "See Networking Cables",
-    category: "Telecom & Networking"
+    category: "Telecom"
   },
   {
     slug: "pvc-electrical-tape",
     image: "Tape.png",
-    title: "PVC ELECTRICAL TAPE",
+    title: "PVC TAPE",
     description: "Flexible insulation tape for electrical wiring protection.",
     button: "Shop Electrical Tape",
-    category: "Electrical Insulation"
+    category: "Insulation"
   },
   {
     slug: "terminal-pvc-sleeves",
     image: "DipMoulding Cap.png",
-    title: "TERMINAL PVC SLEEVES",
+    title: "TERMINAL SLEEVES",
     description: "Durable dip-moulded sleeves and covers for electrical terminal insulation.",
-    button: "Discover Sleeves & Covers",
-    category: "Dip Moulded Components"
+    button: "Discover Sleeves",
+    category: "Dip Moulding"
   },
   {
     slug: "pvc-sleeves",
@@ -410,37 +408,42 @@ const slides = [
     title: "PVC SLEEVES",
     description: "Protective sleeves for wire harnessing in electrical and industrial applications.",
     button: "View Sleeve Sizes",
-    category: "Electrical Insulation"
+    category: "Insulation"
   },
   {
     slug: "wire-harness-connectors",
     image: "wire harness connectors.png",
-    title: "WIRE HARNESS CONNECTORS",
-    description: "Reliable connectors, grommets, and accessories for automotive, appliance, and industrial wiring harnesses.",
-    button: "Explore Connector Range",
-    category: "Connectivity Solutions"
+    title: "WIRE CONNECTORS",
+    description: "Reliable connectors, grommets, and accessories for automotive and industrial wiring.",
+    button: "Explore Connectors",
+    category: "Connectivity"
   }
 ];
 
-
 export default function AppleStyleSlider() {
   const router = useRouter();
-
   const [current, setCurrent] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const slideCount = slides.length;
 
-  // ... (useEffect and other functions remain the same)
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Auto-play
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slideCount);
-    }, 5000);
-
+    }, 4000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, slideCount]);
 
+  // Get Prev, Current, Next indices
   function getVisibleIndices(centerIdx: number) {
     const prev = (centerIdx - 1 + slideCount) % slideCount;
     const next = (centerIdx + 1) % slideCount;
@@ -451,244 +454,167 @@ export default function AppleStyleSlider() {
   const goTo = (idx: number) => {
     setCurrent(idx);
     setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 10000);
+    setTimeout(() => setIsAutoPlaying(true), 8000);
   };
   const prev = () => goTo((current - 1 + slideCount) % slideCount);
   const next = () => goTo((current + 1) % slideCount);
 
-
   return (
     <div className="relative w-full bg-background-dark py-16 overflow-hidden">
-      {/* Section Header (Stays dark theme) */}
-      <div className="container mx-auto px-4 mb-12">
-        <motion.div 
-          className="text-center max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <div className="inline-flex items-center bg-secondary/20 text-secondary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-            <span className="w-2 h-2 bg-secondary rounded-full mr-2 animate-pulse"></span>
-            Our Products & Services
-          </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-light mb-6">
-            Innovative Polymer
-            <span className="block text-secondary">Solutions</span>
-          </h2>
-          <p className="text-xl text-text-secondary leading-relaxed max-w-3xl mx-auto">
-            Discover our comprehensive range of advanced polymer products and services, 
-            engineered to meet the evolving demands of modern industry.
-          </p>
-          <div className="w-24 h-1 bg-secondary mx-auto mt-8 rounded-full"></div>
-        </motion.div>
+      
+      {/* Header */}
+      <div className="container mx-auto px-4 mb-12 text-center">
+        <div className="inline-flex items-center bg-secondary/20 text-secondary px-4 py-2 rounded-full text-xs font-semibold mb-4 border border-secondary/30">
+          <span className="w-2 h-2 bg-secondary rounded-full mr-2 animate-pulse"></span>
+          Our Products & Services
+        </div>
+        <h2 className="text-3xl md:text-5xl font-bold text-text-light mb-4">
+          Innovative Polymer <span className="text-secondary">Solutions</span>
+        </h2>
+        <p className="text-text-secondary max-w-2xl mx-auto">
+          Advanced materials engineered for modern industry performance.
+        </p>
       </div>
 
-      {/* Controls (Stay dark theme) */}
-      <div className="absolute left-4 md:left-8 top-1/2 z-20 transform -translate-y-1/2">
-        <motion.button
-          className="bg-background-card/90 backdrop-blur-sm rounded-full p-3 text-text-light hover:bg-background-card hover:scale-110 shadow-lg border border-border-color/50 transition-all duration-300"
+      {/* Controls - Centered Vertically */}
+      <div className="absolute left-4 md:left-10 top-1/2 z-40 -translate-y-1/2">
+        <button 
           onClick={prev}
-          aria-label="Previous slide"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
+          className="bg-background-card/80 backdrop-blur-md p-3 rounded-full text-text-light hover:bg-primary hover:scale-110 transition-all border border-border-color/50 shadow-xl"
         >
           <ChevronLeft size={24} />
-        </motion.button>
+        </button>
       </div>
       
-      <div className="absolute right-4 md:right-8 top-1/2 z-20 transform -translate-y-1/2">
-        <motion.button
-          className="bg-background-card/90 backdrop-blur-sm rounded-full p-3 text-text-light hover:bg-background-card hover:scale-110 shadow-lg border border-border-color/50 transition-all duration-300"
+      <div className="absolute right-4 md:right-10 top-1/2 z-40 -translate-y-1/2">
+        <button 
           onClick={next}
-          aria-label="Next slide"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
+          className="bg-background-card/80 backdrop-blur-md p-3 rounded-full text-text-light hover:bg-primary hover:scale-110 transition-all border border-border-color/50 shadow-xl"
         >
           <ChevronRight size={24} />
-        </motion.button>
+        </button>
       </div>
 
-      <div className="absolute top-4 right-4 z-20">
-        <motion.button
-          className="bg-background-card/90 backdrop-blur-sm rounded-full p-2 text-text-light hover:bg-background-card shadow-lg border border-border-color/50 transition-all duration-300"
-          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-          aria-label={isAutoPlaying ? "Pause slideshow" : "Play slideshow"}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {isAutoPlaying ? (
-            <div className="w-4 h-4 flex space-x-1">
-              <div className="w-1 h-4 bg-text-light rounded"></div>
-              <div className="w-1 h-4 bg-text-light rounded"></div>
-            </div>
-          ) : (
-            <Play size={16} className="ml-0.5" />
-          )}
-        </motion.button>
-      </div>
+      {/* 3D Slider Container */}
+      <div className="relative flex justify-center items-center w-full h-[450px] md:h-[500px]">
+        <AnimatePresence mode="popLayout">
+          {visibleIndices.map((slideIndex, position) => {
+            // On Mobile, only show center slide
+            if (isMobile && position !== 1) return null;
 
-      {/* Enhanced Slider */}
-      <div className="relative flex justify-center items-center w-full max-w-7xl mx-auto px-4">
-        <div 
-          className="relative w-full"
-          style={{ height: 'clamp(300px, 25vw, 450px)' }}
-        >
-          <AnimatePresence mode="wait">
-            {visibleIndices.map((slideIndex, position) => {
-              // ... (animation logic remains the same)
-              const isCenter = position === 1;
-              const isLeft = position === 0;
-              const isRight = position === 2;
-              
-              let xOffset = '0%';
-              let scale = 1;
-              let zIndex = 10;
-              let opacity = 0.4;
-              
-              if (isCenter) {
-                xOffset = '0%';
-                scale = 1.1;
-                zIndex = 30;
-                opacity = 1;
-              } else if (isLeft) {
-                xOffset = '-85%';
-                scale = 0.85;
-                zIndex = 20;
-                opacity = 0.6;
-              } else if (isRight) {
-                xOffset = '85%';
-                scale = 0.85;
-                zIndex = 20;
-                opacity = 0.6;
-              }
+            const isCenter = position === 1;
+            const isLeft = position === 0;
+            const isRight = position === 2;
+            
+            // 3D Positioning Logic
+            let xOffset = '0%';
+            let scale = 1;
+            let zIndex = 10;
+            let opacity = 0.5;
+            let rotateY = 0;
+            
+            if (isCenter) {
+              xOffset = '0%';
+              scale = 1.1; // Pop out
+              zIndex = 30;
+              opacity = 1;
+              rotateY = 0;
+            } else if (isLeft) {
+              xOffset = '-75%'; // Move Left
+              scale = 0.85; // Shrink
+              zIndex = 20;
+              opacity = 0.6;
+              rotateY = 15; // Slight tilt
+            } else if (isRight) {
+              xOffset = '75%'; // Move Right
+              scale = 0.85; // Shrink
+              zIndex = 20;
+              opacity = 0.6;
+              rotateY = -15; // Slight tilt
+            }
 
-              return (
-                <motion.div
-                  key={`${slideIndex}-${position}`}
-                  className={cn(
-                    "absolute top-0 left-1/2 cursor-pointer border border-gray-200/50", // Changed border
-                    isCenter ? "shadow-2xl shadow-gray-400/20" : "shadow-md" // Changed shadow
-                  )}
-                  style={{
-                    width: 'clamp(280px, 35vw, 500px)',
-                    height: '100%',
-                    borderRadius: '1.5rem',
-                    overflow: 'hidden',
-                    zIndex,
-                  }}
-                  initial={{ 
-                    x: '-50%',
-                    scale: 0.8,
-                    opacity: 0
-                  }}
-                  animate={{ 
-                    x: `calc(-50% + ${xOffset})`,
-                    scale,
-                    opacity
-                  }}
-                  transition={{ 
-                    duration: 0.6,
-                    ease: [0.25, 0.46, 0.45, 0.94]
-                  }}
-                  onClick={() => !isCenter && goTo(slideIndex)}
-                  whileHover={!isCenter ? { scale: scale * 1.05 } : {}}
-                >
-                  <div className="relative w-full h-full group">
-                    <img
-                      src={slides[slideIndex].image}
-                      className="w-full h-full object-cover"
-                      alt={slides[slideIndex].title}
-                      draggable={false}
-                    />
+            return (
+              <motion.div
+                key={`${slideIndex}-${position}`}
+                className={cn(
+                  "absolute top-0 left-1/2 cursor-pointer rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-2xl",
+                  isCenter ? "shadow-primary/20 ring-2 ring-primary/50" : "grayscale-[0.5]"
+                )}
+                style={{
+                  width: 'clamp(280px, 30vw, 450px)',
+                  height: '100%',
+                  zIndex,
+                  perspective: '1000px',
+                }}
+                initial={{ x: '-50%', scale: 0.8, opacity: 0 }}
+                animate={{ 
+                  x: `calc(-50% + ${xOffset})`, 
+                  scale, 
+                  opacity,
+                  rotateY
+                }}
+                transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                onClick={() => !isCenter && goTo(slideIndex)}
+              >
+                <div className="relative w-full h-full group">
+                  <img
+                    src={slides[slideIndex].image}
+                    className="w-full h-full object-cover"
+                    alt={slides[slideIndex].title}
+                  />
+                  
+                  {/* ✅ Light Overlay for Black Text */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/50 to-transparent" />
+                  
+                  {/* Content - Black Text */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-gray-900 text-center">
+                    <span className="inline-block px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-bold rounded-full mb-2 uppercase tracking-wider">
+                      {slides[slideIndex].category}
+                    </span>
+                    <h3 className="text-2xl font-bold mb-2 leading-tight">
+                      {slides[slideIndex].title}
+                    </h3>
                     
-                    {/* ✅ THEMED: Overlay changed from dark to light */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/50 to-transparent" />
-                    
-                    {/* Category Badge (Stays the same, still looks good) */}
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-secondary/90 text-text-light px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
-                        {slides[slideIndex].category}
-                      </span>
-                    </div>
-                    
-                    {/* ✅ THEMED: Content changed to dark text */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-gray-900">
-                      <motion.h3 
-                        className="font-bold text-xl md:text-2xl mb-2"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: isCenter ? 1 : 0.8, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        {slides[slideIndex].title}
-                      </motion.h3>
-                      
-                      <motion.p 
-                        className="text-sm md:text-base mb-4 text-gray-700 leading-relaxed"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: isCenter ? 1 : 0.7, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                      >
+                    {/* Only show button & desc on center slide for cleaner look */}
+                    <motion.div
+                      animate={{ opacity: isCenter ? 1 : 0, height: isCenter ? 'auto' : 0 }}
+                      className="overflow-hidden"
+                    >
+                      <p className="text-sm text-gray-600 line-clamp-2 mb-4 font-medium">
                         {slides[slideIndex].description}
-                      </motion.p>
-                      
-                      {/* ✅ THEMED: Button changed to white with dark text */}
-                      <motion.button
-                        className="bg-white hover:bg-gray-100 text-gray-900 px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-xl border border-gray-200/50 transition-all duration-300 inline-flex items-center group"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: isCenter ? 1 : 0.8, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => router.push(`/products/${slides[slideIndex].slug}`)}
+                      </p>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/products/${slides[slideIndex].slug}`);
+                        }}
+                        className="w-full bg-gray-900 text-white py-3 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-primary transition-colors shadow-lg"
                       >
                         {slides[slideIndex].button}
-                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </motion.button>
-
-                    </div>
+                        <ArrowRight size={16} />
+                      </button>
+                    </motion.div>
                   </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
-      {/* Progress Indicators (Stays dark theme) */}
-      <div className="flex justify-center items-center space-x-3 mt-8">
+      {/* Progress Dots */}
+      <div className="flex justify-center space-x-2 mt-10">
         {slides.map((_, i) => (
-          <motion.button
+          <button
             key={i}
-            className={cn(
-              "relative overflow-hidden rounded-full transition-all duration-300",
-              i === current 
-                ? "w-12 h-3 bg-primary" 
-                : "w-3 h-3 bg-background-card hover:bg-border-color/50"
-            )}
             onClick={() => goTo(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {i === current && isAutoPlaying && (
-              <motion.div
-                className="absolute top-0 left-0 h-full bg-primary-hover"
-                initial={{ width: '0%' }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 5, ease: 'linear' }}
-                key={current} 
-              />
+            className={cn(
+              "h-1.5 rounded-full transition-all duration-500",
+              i === current ? "w-8 bg-secondary" : "w-2 bg-gray-600/50 hover:bg-gray-500"
             )}
-          </motion.button>
+            aria-label={`Go to slide ${i + 1}`}
+          />
         ))}
-      </div>
-
-      {/* Slide Counter (Stays dark theme) */}
-      <div className="text-center mt-4">
-        <span className="text-sm text-text-secondary font-medium">
-          {current + 1} / {slideCount}
-        </span>
       </div>
     </div>
   );

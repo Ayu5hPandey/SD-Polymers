@@ -531,11 +531,16 @@
 // export default App;
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Star, ArrowRight, Users, Award, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMediaQuery } from 'react-responsive';
 
-function App() {
+// --- LOGIC COMPONENT ---
+function ContactFormLogic() {
+  const searchParams = useSearchParams();
+  const productInterest = searchParams.get('product');
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -546,11 +551,16 @@ function App() {
   
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
 
-
-  const isMobile = useMediaQuery({ maxWidth: 768 });
+  useEffect(() => {
+    if (productInterest) {
+      setFormData(prev => ({
+        ...prev,
+        message: `I am interested in getting a quote for ${productInterest}. Please provide details regarding pricing and specifications.`
+      }));
+    }
+  }, [productInterest]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -563,11 +573,7 @@ function App() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitted(true);
-    setIsSubmitting(false);
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
     
     try {
       const res = await fetch('/api/contact', {
@@ -577,232 +583,247 @@ function App() {
       });
 
       if (res.ok) {
-        setStatus('Message sent successfully!');
+        setIsSubmitted(true);
         setFormData({ name: '', company: '', email: '',phone: '', message: '' });
       } else {
         setStatus('Something went wrong. Try again.');
       }
     } catch (err) {
       setStatus('Error sending message.');
+    } finally {
+        setIsSubmitting(false);
     }
   };
 
-  // ✅ UPDATED: Services reflect your data
+  if (isSubmitted) {
+    return (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-secondary" />
+          </div>
+          <h3 className="text-2xl font-bold text-text-light mb-2">Message Sent Successfully!</h3>
+          <p className="text-text-secondary mb-4 px-4">
+            Thank you for reaching out. Our polymer experts will review your requirements for <strong>{productInterest || 'your project'}</strong> and respond within 24 hours.
+          </p>
+          <p className="text-xs text-text-secondary/70">
+            For urgent matters, please call us directly at +91 98917 58899
+          </p>
+          <button 
+            onClick={() => setIsSubmitted(false)}
+            className="mt-6 text-primary hover:text-primary-hover font-semibold text-sm underline"
+          >
+            Send another message
+          </button>
+        </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Visual Indicator for Product Context */}
+        {productInterest && (
+        <div className="bg-primary/10 border border-primary/30 p-3 rounded-lg text-sm text-primary mb-4 flex items-center gap-2">
+            <Zap className="w-4 h-4" />
+            <span>Requesting quote for: <strong>{productInterest}</strong></span>
+        </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+            <label htmlFor="name" className="block text-sm font-semibold text-text-secondary mb-2">Full Name *</label>
+            <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full mt-1 p-3 bg-background-dark border border-border-color/50 rounded-lg text-text-light focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none placeholder:text-gray-600" placeholder="Your full name" />
+        </div>
+        <div>
+            <label htmlFor="company" className="block text-sm font-semibold text-text-secondary mb-2">Company</label>
+            <input type="text" id="company" name="company" value={formData.company} onChange={handleInputChange} className="w-full mt-1 p-3 bg-background-dark border border-border-color/50 rounded-lg text-text-light focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none placeholder:text-gray-600" placeholder="Company name" />
+        </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+            <label htmlFor="email" className="block text-sm font-semibold text-text-secondary mb-2">Email Address *</label>
+            <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full mt-1 p-3 bg-background-dark border border-border-color/50 rounded-lg text-text-light focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none placeholder:text-gray-600" placeholder="name@company.com" />
+        </div>
+        <div>
+            <label htmlFor="phone" className="block text-sm font-semibold text-text-secondary mb-2">Phone Number</label>
+            <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full mt-1 p-3 bg-background-dark border border-border-color/50 rounded-lg text-text-light focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none placeholder:text-gray-600" placeholder="+91 98917 58899" />
+        </div>
+        </div>
+
+        <div>
+        <label htmlFor="message" className="block text-sm font-semibold text-text-secondary mb-2">Project Details *</label>
+        <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={5} className="w-full mt-1 p-3 bg-background-dark border border-border-color/50 rounded-lg text-text-light focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none outline-none placeholder:text-gray-600" placeholder="Tell us about your requirements..." />
+        </div>
+
+        <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-primary to-primary-hover text-white px-6 py-4 rounded-lg font-bold hover:from-primary-hover hover:to-primary transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
+        {isSubmitting ? (
+            <>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+            <span>Sending...</span>
+            </>
+        ) : (
+            <>
+            <Send className="w-5 h-5" />
+            <span>Send Message</span>
+            </>
+        )}
+        </button>
+        
+        {status && <p className="text-red-400 text-sm text-center mt-2">{status}</p>}
+        <p className="text-xs text-text-secondary/50 text-center pt-2">By submitting, you agree to our privacy policy.</p>
+    </form>
+  );
+}
+
+// --- MAIN PAGE COMPONENT ---
+export default function ContactPage() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+
+  // Data Arrays
   const services = [
-    { 
-      title: 'PVC Compounding', 
-      icon: Zap,
-      description: 'High-quality, ROHS & REACH compliant PVC granules for various industrial and automotive applications.'
-    },
-    { 
-      title: 'Connectors & Harnessing', 
-      icon: Award,
-      description: 'Specializing in reliable wire harness connectors and components for automotive and industrial use.'
-    },
-    { 
-      title: 'Dip Moulding & Sleeves', 
-      icon: Users,
-      description: 'Producing durable, dip-moulded terminal sleeves and caps for electrical insulation and protection.'
-    },
-    { 
-      title: 'Custom Wiring Solutions', 
-      icon: ArrowRight,
-      description: 'Providing a range of wiring, from CAT-5 data cables to heat-resistant silicone braided wires.'
-    }
+    { title: 'PVC Compounding', icon: Zap, description: 'High-quality, ROHS & REACH compliant PVC granules for various industrial and automotive applications.' },
+    { title: 'Connectors & Harnessing', icon: Award, description: 'Specializing in reliable wire harness connectors and components for automotive and industrial use.' },
+    { title: 'Dip Moulding & Sleeves', icon: Users, description: 'Producing durable, dip-moulded terminal sleeves and caps for electrical insulation and protection.' },
+    { title: 'Custom Wiring Solutions', icon: ArrowRight, description: 'Providing a range of wiring, from CAT-5 data cables to heat-resistant silicone braided wires.' }
   ];
 
-  // ✅ UPDATED: Testimonials are now relevant
   const testimonials = [
-    {
-      text: "S.D Polymers delivered exceptional results for our automotive components. Their custom PVC granules are top-tier.",
-      author: "R. Sharma",
-      company: "AutoTech Industries",
-      rating: 5
-    },
-    {
-      text: "Fast turnaround on our connector order, excellent quality, and outstanding technical support. Our go-to partner.",
-      author: "A. Gupta",
-      company: "Industrial Dynamics",
-      rating: 5
-    }
+    { text: "S.D Polymers delivered exceptional results for our automotive components. Their custom PVC granules are top-tier.", author: "R. Sharma", company: "AutoTech Industries", rating: 5 },
+    { text: "Fast turnaround on our connector order, excellent quality, and outstanding technical support. Our go-to partner.", author: "A. Gupta", company: "Industrial Dynamics", rating: 5 }
   ];
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % services.length);
-  };
+  // Carousel Logic
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % services.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + services.length) % services.length);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + services.length) % services.length);
-  };
-
-  const ServiceCard = ({ service, index }: { service: typeof services[0], index: number }) => (
-    <div className="bg-background-dark border border-border-color/20 p-6 sm:p-8 rounded-2xl hover:bg-background-dark/50 transition-all duration-300 group cursor-pointer h-full flex flex-col">
-      <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-        <service.icon className="w-6 h-6 text-white" />
+  const ServiceCard = ({ service }: { service: typeof services[0], index: number }) => (
+    <div className="bg-background-dark border border-border-color/20 p-6 sm:p-8 rounded-2xl hover:bg-background-dark/50 transition-all duration-300 group cursor-pointer h-full flex flex-col hover:border-primary/50 shadow-lg hover:shadow-primary/10">
+      <div className="w-14 h-14 bg-gradient-to-r from-primary to-secondary rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-md">
+        <service.icon className="w-7 h-7 text-white" />
       </div>
-      <h3 className="text-lg sm:text-xl font-semibold text-text-light mb-3">{service.title}</h3>
-      <p className="text-text-secondary leading-relaxed flex-grow text-sm sm:text-base">
-        {service.description}
-      </p>
-      <div className="flex items-center mt-4 text-secondary group-hover:text-secondary-hover transition-colors duration-200">
-        <span className="text-sm font-medium">Learn more</span>
-        <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" />
+      <h3 className="text-xl font-bold text-text-light mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
+      <p className="text-text-secondary leading-relaxed flex-grow text-sm">{service.description}</p>
+      <div className="flex items-center mt-6 text-secondary font-semibold group-hover:text-secondary-hover transition-colors duration-200 text-sm">
+        <span>Learn more</span>
+        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-background-dark text-text-light">
+    <div className="min-h-screen bg-background-dark text-text-light selection:bg-primary/30 selection:text-white">
       
       {/* Hero Section */}
-      <section className="pt-10 sm:pt-25 pb-12 sm:pb-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-16">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-text-light mb-4 sm:mb-6 leading-tight px-2">
-              Ready to Transform Your
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent block sm:inline"> Polymer Project?</span>
+      <section className="pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
+        {/* Background decorative blob */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-3xl opacity-30 pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-text-light mb-6 leading-tight tracking-tight">
+              Ready to Transform Your <br className="hidden md:block" />
+              <span className="bg-gradient-to-r from-primary via-blue-400 to-secondary bg-clip-text text-transparent">Polymer Project?</span>
             </h1>
-            <p className="text-lg sm:text-xl text-text-secondary max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
-              Connect with our expert team today. We specialize in high-performance polymer solutions 
-              that drive innovation across industries.
+            <p className="text-lg sm:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
+              Connect with our expert team today. We specialize in high-performance polymer solutions that drive innovation across industries.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-              <a href="tel:+919891758899" className="bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:bg-primary-hover transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 text-sm sm:text-base">
-                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Call Now: +91 98917 58899</span>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+              <a href="tel:+919891758899" className="bg-primary text-white px-8 py-4 rounded-full font-bold hover:bg-primary-hover transition-all duration-200 transform hover:scale-105 shadow-lg shadow-primary/25 flex items-center justify-center space-x-2">
+                <Phone className="w-5 h-5" />
+                <span>Call: +91 98917 58899</span>
               </a>
-              <a href="#contact-form" className="bg-transparent text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold border-2 border-primary hover:bg-primary hover:text-text-light transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base">
-                <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
+              <a href="#contact-form" className="bg-white/5 backdrop-blur-sm text-text-light px-8 py-4 rounded-full font-bold border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center space-x-2">
+                <Mail className="w-5 h-5" />
                 <span>Send Message</span>
               </a>
             </div>
           </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-16 px-4">
-            <div className="text-center bg-background-card p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-border-color/20">
-              <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">24hr</div>
-              <div className="text-text-secondary text-sm sm:text-base">Response Time</div>
+          
+          {/* Stats Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <div className="bg-background-card/50 backdrop-blur-md p-6 rounded-2xl border border-border-color/20 text-center">
+                <div className="text-3xl font-bold text-primary mb-1">24hr</div>
+                <div className="text-sm text-text-secondary uppercase tracking-wider font-medium">Response Time</div>
             </div>
-            <div className="text-center bg-background-card p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-border-color/20">
-              <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">100+</div>
-              <div className="text-text-secondary text-sm sm:text-base">Projects Delivered</div>
+            <div className="bg-background-card/50 backdrop-blur-md p-6 rounded-2xl border border-border-color/20 text-center">
+                <div className="text-3xl font-bold text-primary mb-1">100+</div>
+                <div className="text-sm text-text-secondary uppercase tracking-wider font-medium">Projects Delivered</div>
             </div>
-            <div className="text-center bg-background-card p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-border-color/20">
-              <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">Since</div>
-              <div className="text-text-secondary text-sm sm:text-base">2021</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Information */}
-      <section className="py-12 sm:py-16 bg-background-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-light mb-4">Get In Touch</h2>
-            <p className="text-base sm:text-lg text-text-secondary">Multiple ways to reach our expert team</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
-            {/* Phone */}
-            <div className="bg-background-card p-6 sm:p-8 rounded-2xl text-center transition-all duration-300 transform hover:scale-105 border border-border-color/20">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-text-light mb-2">Call Us</h3>
-              {/* ✅ FIXED THE TYPO HERE */}
-              <p className="text-text-secondary mb-4 text-sm sm:text-base">Speak directly with our experts</p>
-              <a href="tel:+919891758899" className="text-primary font-semibold hover:text-primary-hover transition-colors duration-200 text-sm sm:text-base">
-                +91 98917 58899
-              </a>
-              <p className="text-xs sm:text-sm text-text-secondary/70 mt-2">Mon-Fri 9AM-7PM IST</p>
-            </div>
-
-            {/* Email */}
-            <div className="bg-background-card p-6 sm:p-8 rounded-2xl text-center transition-all duration-300 transform hover:scale-105 border border-border-color/20">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-text-light mb-2">Email Us</h3>
-              <p className="text-text-secondary mb-4 text-sm sm:text-base">Get detailed project quotes</p>
-              <a href="mailto:contact@sdpolymers.in" className="text-secondary font-semibold hover:text-secondary-hover transition-colors duration-200 text-sm sm:text-base break-all">
-                contact@sdpolymers.in
-              </a>
-              <p className="text-xs sm:text-sm text-text-secondary/70 mt-2">24-hour response guarantee</p>
-            </div>
-
-            {/* Location */}
-            <div className="bg-background-card p-6 sm:p-8 rounded-2xl text-center transition-all duration-300 transform hover:scale-105 border border-border-color/20">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-background-dark border border-border-color/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-text-light" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-text-light mb-2">Visit Us</h3>
-              <p className="text-text-secondary mb-4 text-sm sm:text-base">Roopnagar Industrial Area, Loni</p>
-              <p className="text-text-secondary font-semibold text-sm sm:text-base">
-                Ghaziabad, Uttar Pradesh
-              </p>
-              <p className="text-xs sm:text-sm text-text-secondary/70 mt-2">By appointment only</p>
+            <div className="bg-background-card/50 backdrop-blur-md p-6 rounded-2xl border border-border-color/20 text-center">
+                <div className="text-3xl font-bold text-primary mb-1">2021</div>
+                <div className="text-sm text-text-secondary uppercase tracking-wider font-medium">Established</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Overview */}
-      <section className="py-12 sm:py-16 bg-background-card" id="services">
+      {/* Contact Details Grid */}
+      <section className="py-16 md:py-24 bg-background-dark relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-light mb-4">Our Expertise</h2>
-            <p className="text-base sm:text-lg text-text-secondary">Comprehensive polymer solutions for your industry</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {/* Phone Card */}
+            <div className="bg-background-card p-8 rounded-2xl border border-border-color/20 hover:border-primary/30 transition-colors group text-center">
+              <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <Phone className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-text-light mb-2">Call Us</h3>
+              <p className="text-text-secondary mb-4 text-sm">Mon-Sat from 9am to 7pm.</p>
+              <a href="tel:+919891758899" className="text-lg font-semibold text-primary hover:text-primary-hover block">+91 98917 58899</a>
+            </div>
+
+            {/* Email Card */}
+            <div className="bg-background-card p-8 rounded-2xl border border-border-color/20 hover:border-secondary/30 transition-colors group text-center">
+              <div className="w-12 h-12 mx-auto bg-secondary/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-secondary/20 transition-colors">
+                <Mail className="w-6 h-6 text-secondary" />
+              </div>
+              <h3 className="text-xl font-bold text-text-light mb-2">Email Us</h3>
+              <p className="text-text-secondary mb-4 text-sm">We'll get back to you within 24 hours.</p>
+              <a href="mailto:contact@sdpolymers.in" className="text-lg font-semibold text-secondary hover:text-secondary-hover block">contact@sdpolymers.in</a>
+            </div>
+
+            {/* Location Card */}
+            <div className="bg-background-card p-8 rounded-2xl border border-border-color/20 hover:border-blue-400/30 transition-colors group text-center">
+              <div className="w-12 h-12 mx-auto bg-blue-400/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-400/20 transition-colors">
+                <MapPin className="w-6 h-6 text-blue-400" />
+              </div>
+              <h3 className="text-xl font-bold text-text-light mb-2">Visit Us</h3>
+              <p className="text-text-secondary mb-1 text-sm">Roopnagar Industrial Area, Loni</p>
+              <p className="text-text-light font-medium">Ghaziabad, Uttar Pradesh</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Expertise / Services Section */}
+      <section className="py-20 bg-background-card relative overflow-hidden" id="services">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border-color/30 to-transparent" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-light mb-4">Our Expertise</h2>
+            <p className="text-text-secondary max-w-2xl mx-auto">Comprehensive polymer solutions tailored for your industry needs.</p>
           </div>
 
           {isMobile ? (
-            /* Mobile Slider */
-            <div className="relative">
-              <div className="overflow-hidden rounded-2xl">
-                <div 
-                  className="flex transition-transform duration-300 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
+            // Mobile Slider Logic
+            <div className="relative px-4">
+              <div className="overflow-hidden">
+                <div className="flex transition-transform duration-500 ease-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
                   {services.map((service, index) => (
-                    <div key={index} className="w-full flex-shrink-0 px-2">
+                    <div key={index} className="w-full flex-shrink-0 px-1">
                       <ServiceCard service={service} index={index} />
                     </div>
                   ))}
                 </div>
               </div>
-              
-              <button
-                onClick={prevSlide}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-background-dark/50 backdrop-blur-sm rounded-full p-2 text-white hover:bg-background-dark transition-all duration-200"
-                aria-label="Previous service"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-background-dark/50 backdrop-blur-sm rounded-full p-2 text-white hover:bg-background-dark transition-all duration-200"
-                aria-label="Next service"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-
-              <div className="flex justify-center mt-6 space-x-2">
-                {services.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                      index === currentSlide ? 'bg-primary w-6' : 'bg-background-dark'
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
+              <div className="flex justify-center gap-3 mt-6">
+                <button onClick={prevSlide} className="p-2 rounded-full bg-background-dark border border-border-color text-text-secondary hover:text-text-light"><ChevronLeft className="w-5 h-5" /></button>
+                <button onClick={nextSlide} className="p-2 rounded-full bg-background-dark border border-border-color text-text-secondary hover:text-text-light"><ChevronRight className="w-5 h-5" /></button>
               </div>
             </div>
           ) : (
-            /* Desktop Grid */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            // Desktop Grid
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {services.map((service, index) => (
                 <ServiceCard key={index} service={service} index={index} />
               ))}
@@ -811,159 +832,47 @@ function App() {
         </div>
       </section>
 
-      {/* Contact Form */}
-      <section className="py-12 sm:py-20 bg-background-dark" id="contact-form">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-light mb-4">Start Your Project Today</h2>
-            <p className="text-base sm:text-lg text-text-secondary px-4">Tell us about your polymer needs and we'll provide a detailed consultation</p>
+      {/* Main Contact Form Section */}
+      <section className="py-24 bg-background-dark relative" id="contact-form">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <span className="text-secondary font-bold tracking-wider uppercase text-sm mb-2 block">Get Started</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-text-light mb-6">Start Your Project Today</h2>
+            <p className="text-text-secondary text-lg">
+                Tell us about your polymer needs. We'll analyze your requirements and provide a detailed consultation and quote.
+            </p>
           </div>
 
-          <div className="bg-background-card rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12 border border-border-color/20">
-            {!isSubmitted ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-semibold text-text-secondary mb-2">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border-color/50 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background-dark focus:bg-background-dark text-text-light text-sm sm:text-base"
-                      placeholder="Your full name"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="company" className="block text-sm font-semibold text-text-secondary mb-2">
-                      Company
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border-color/50 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background-dark focus:bg-background-dark text-text-light text-sm sm:text-base"
-                      placeholder="Your company name (optional)"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-text-secondary mb-2">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border-color/50 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background-dark focus:bg-background-dark text-text-light text-sm sm:text-base"
-                      placeholder="your.email@company.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-semibold text-text-secondary mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border-color/50 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background-dark focus:bg-background-dark text-text-light text-sm sm:text-base"
-                      placeholder="+91 98917 58899"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-text-secondary mb-2">
-                    Project Details *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={isMobile ? 4 : 6}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border-color/50 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 resize-none bg-background-dark focus:bg-background-dark text-text-light text-sm sm:text-base"
-                    placeholder="Please describe your project requirements, including polymer type, application, performance specifications, and any technical constraints..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-primary to-primary-hover text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:from-primary-hover hover:to-primary transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white"></div>
-                      <span>Sending...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                      <span>Send Message</span>
-                    </>
-                  )}
-                </button>
-
-                <p className="text-xs sm:text-sm text-text-secondary/70 text-center">
-                  By submitting this form, you agree to our privacy policy. We'll never share your information.
-                </p>
-              </form>
-            ) : (
-              <div className="text-center py-8 sm:py-12">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-secondary" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-text-light mb-2">Message Sent Successfully!</h3>
-                <p className="text-text-secondary mb-4 text-sm sm:text-base px-4">
-                  Thank you for reaching out. Our polymer experts will review your requirements and respond within 24 hours.
-                </p>
-                <p className="text-xs sm:text-sm text-text-secondary/70">
-                  For urgent matters, please call us directly at +91 98917 58899
-                </p>
-              </div>
-            )}
+          <div className="bg-background-card rounded-3xl shadow-2xl p-8 md:p-12 border border-border-color/20 relative overflow-hidden">
+            {/* Decorative accent at top of form */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary" />
+            
+            <Suspense fallback={<div className="text-center text-text-secondary py-10">Loading form...</div>}>
+              <ContactFormLogic />
+            </Suspense>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 sm:py-16 bg-background-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-light mb-4">Trusted by Industry Leaders</h2>
-            <p className="text-base sm:text-lg text-text-secondary">See what our clients say about working with us</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-background-card p-6 sm:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-border-color/20">
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />
-                  ))}
+      <section className="py-20 bg-background-dark border-t border-border-color/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl font-bold text-text-light text-center mb-12 opacity-80">Trusted by Industry Leaders</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {testimonials.map((t, i) => (
+              <div key={i} className="bg-background-card/30 p-8 rounded-2xl border border-border-color/10 hover:border-border-color/30 transition-colors">
+                <div className="flex gap-1 text-yellow-500 mb-4">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
                 </div>
-                <p className="text-text-secondary mb-4 sm:mb-6 leading-relaxed italic text-sm sm:text-base">"{testimonial.text}"</p>
-                <div className="border-t border-border-color/30 pt-4">
-                  <p className="font-semibold text-text-light text-sm sm:text-base">{testimonial.author}</p>
-                  <p className="text-xs sm:text-sm text-text-secondary/70">{testimonial.company}</p>
+                <p className="text-text-light text-lg mb-6 italic">"{t.text}"</p>
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white font-bold text-sm">
+                        {t.author[0]}
+                    </div>
+                    <div>
+                        <div className="font-bold text-text-light">{t.author}</div>
+                        <div className="text-xs text-text-secondary uppercase tracking-wide">{t.company}</div>
+                    </div>
                 </div>
               </div>
             ))}
@@ -971,54 +880,6 @@ function App() {
         </div>
       </section>
 
-      {/* Business Hours & Additional Info */}
-      <section className="py-12 sm:py-16 bg-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">Ready When You Are</h2>
-              <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-start space-x-3 text-text-light/90">
-                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base"><strong className="text-white">Business Hours:</strong> Monday - Saturday, 9:00 AM - 7:00 PM IST</span>
-                </div>
-                <div className="flex items-start space-x-3 text-text-light/90">
-                  <Phone className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base"><strong className="text-white">Phone Support:</strong> +91 98917 58899</span>
-                </div>
-                <div className="flex items-start space-x-3 text-text-light/90">
-                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base"><strong className="text-white">Response Time:</strong> Within 24 hours guaranteed</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-primary-hover/50 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white border-opacity-20">
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-4">Why Choose S.D Polymers?</h3>
-              <ul className="space-y-2 sm:space-y-3 text-text-light/90">
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-secondary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm sm:text-base">ISO 9001:2015 Certified</span>
-                </li>
-                 <li className="flex items-start space-x-2">
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-secondary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm sm:text-base">ROHS & REACH Compliant Materials</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-secondary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm sm:text-base">Custom solutions for automotive and industrial markets</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-secondary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm sm:text-base">On-time delivery and consistent quality</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
-
-export default App;

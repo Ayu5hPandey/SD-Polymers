@@ -336,8 +336,15 @@ export default function AboutPage() {
             className="w-full lg:w-1/2 flex justify-center"
           >
             <div className="relative w-80 h-56 lg:w-[520px] lg:h-[320px] rounded-xl overflow-hidden shadow-2xl bg-background-dark/50 border border-border-color/30">
-              <Image src="/images/hero.jpg" alt="SD Polymers products" fill style={{ objectFit: "cover" }} priority />
-            </div>
+  <Image
+    src="/sd%20polymers%20.png"
+    alt="SD Polymers products"
+    fill
+    style={{ objectFit: "cover" }}
+    priority
+  />
+</div>
+
           </motion.div>
         </div>
       </section>
@@ -393,43 +400,83 @@ export default function AboutPage() {
       </motion.section>
 
       {/* CERTIFICATIONS - THEMED */}
-      <section className="bg-background-card py-16 text-text-light">
-        <div className="container mx-auto px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-extrabold uppercase tracking-wider text-secondary">Our Certifications</h2>
-          <p className="mt-4 text-text-secondary max-w-2xl mx-auto text-base leading-relaxed">
-            SD Polymers is dedicated to quality and compliance. Our products are manufactured using <strong className="text-text-light">RoHS</strong>, <strong className="text-text-light">REACH</strong>, and <strong>ISO</strong> certified processes —
-            ensuring safety, sustainability, and global reliability.
-          </p>
+<section className="bg-background-card py-16 text-text-light">
+  <div className="container mx-auto px-6 lg:px-8 text-center">
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center">
-            {/* ✅ Kept white bg for logos, added hover effect */}
-            <motion.div 
-              className="bg-white rounded-lg shadow-md p-6 w-40 h-28 flex items-center justify-center transform transition-all duration-300 hover:scale-110"
-              whileHover={{ scale: 1.1 }}
-            >
-              <Image src="/images/rohs.png" alt="RoHS Certification" width={100} height={60} />
-            </motion.div>
-            <motion.div 
-              className="bg-white rounded-lg shadow-md p-6 w-40 h-28 flex items-center justify-center transform transition-all duration-300 hover:scale-110"
-              whileHover={{ scale: 1.1 }}
-            >
-              <Image src="/images/reach.png" alt="REACH Certification" width={100} height={60} />
-            </motion.div>
-            <motion.div 
-              className="bg-white rounded-lg shadow-md p-6 w-40 h-28 flex items-center justify-center transform transition-all duration-300 hover:scale-110"
-              whileHover={{ scale: 1.1 }}
-            >
-              <Image src="/images/iso.png" alt="ISO Certification" width={100} height={60} />
-            </motion.div>
-          </div>
+    <h2 className="text-3xl font-extrabold uppercase tracking-wider text-secondary">
+      Our Certifications
+    </h2>
 
-          <div className="mt-12">
-            <a href="/certifications" className="inline-block border-2 border-primary text-primary font-semibold px-8 py-3 rounded-lg tracking-wide hover:bg-primary hover:text-text-light transition-all duration-300 transform hover:scale-105">
-              Certification
-            </a>
-          </div>
-        </div>
-      </section>
+    <p className="mt-4 text-text-secondary max-w-2xl mx-auto text-base leading-relaxed">
+      SD Polymers is dedicated to quality and compliance. Our products are manufactured using{" "}
+      <strong className="text-text-light">RoHS</strong>,{" "}
+      <strong className="text-text-light">REACH</strong>, and{" "}
+      <strong className="text-text-light">UDYAM</strong> certified processes —
+      ensuring safety, sustainability, and global reliability.
+    </p>
+
+    <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center">
+
+      {/* RoHS */}
+      <motion.div
+        className="bg-white rounded-lg shadow-md p-6 w-40 h-28 flex items-center justify-center transform transition-all duration-300 hover:scale-110"
+        whileHover={{ scale: 1.1 }}
+      >
+        <Image
+          src="/images/rohs.png"
+          alt="RoHS Certification"
+          width={100}
+          height={60}
+        />
+      </motion.div>
+
+      {/* REACH */}
+      <motion.div
+        className="bg-white rounded-lg shadow-md p-6 w-40 h-28 flex items-center justify-center transform transition-all duration-300 hover:scale-110"
+        whileHover={{ scale: 1.1 }}
+      >
+        <Image
+          src="/images/reach.png"
+          alt="REACH Certification"
+          width={100}
+          height={60}
+        />
+      </motion.div>
+
+      {/* UDYAM */}
+     {/* UDYAM */}
+<motion.div
+  className="bg-white rounded-2xl shadow-md p-3
+             w-40 h-56
+             flex items-center justify-center
+             transition-all duration-300"
+  whileHover={{ scale: 1.05 }}
+>
+  <div className="relative w-full h-full">
+    <Image
+      src="/Udyam%20%20Certificate%20S%20D%20POLYMERS-1.jpg"
+      alt="UDYAM Certification"
+      fill
+      className="object-contain"
+    />
+  </div>
+</motion.div>
+
+
+    </div>
+
+    <div className="mt-12">
+      <a
+        href="/certifications"
+        className="inline-block border-2 border-primary text-primary font-semibold px-8 py-3 rounded-lg tracking-wide hover:bg-primary hover:text-text-light transition-all duration-300 transform hover:scale-105"
+      >
+        Certification
+      </a>
+    </div>
+
+  </div>
+</section>
+
 
       {/* CTA & CONTACT FORM - THEMED */}
       <motion.section 

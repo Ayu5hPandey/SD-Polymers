@@ -72,12 +72,12 @@
 //     slug: encodeURIComponent(product.slug),
 //   }));
 // }
-import { products } from "../../../data/products"; // <-- FIX: Relative path from app/products/[slug] to lib
+import { products } from "../../../data/products"; 
 import { notFound } from "next/navigation";
-import { ProductClientUI } from "../../../components/section/ProductClientUI"; // <-- FIX: Relative path in same folder
-import { Product } from "../../../data/products"; // <-- FIX: Relative path from app/products/[slug] to lib
+import { ProductClientUI } from "../../../components/section/ProductClientUI"; 
 import type { Metadata } from 'next';
-import { SafeImage } from "../../../components/ui/Safelmage"; // <-- FIX: Relative path in same folder
+import { SafeImage } from "../../../components/ui/Safelmage"; 
+import Link from "next/link"; // ✅ Import Link for the button
 
 // --- Props Interface ---
 interface Props {
@@ -88,7 +88,6 @@ interface Props {
 // 1. GENERATE METADATA
 // =================================================================
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // --- FIX: Awaiting params as requested by the error ---
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const product = products.find((p) => p.slug === decodedSlug);
@@ -107,7 +106,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // 2. THE PAGE COMPONENT
 // =================================================================
 export default async function ProductPage({ params }: Props) {
-  // --- FIX: Awaiting params as requested by the error ---
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const product = products.find((p) => p.slug === decodedSlug);
@@ -131,11 +129,21 @@ export default async function ProductPage({ params }: Props) {
             <p className="mt-4 text-lg text-gray-400">
               {product.description}
             </p>
+
+            {/* ✅ ADDED: Request a Quote Button */}
+            <div className="mt-8">
+              <Link
+                href={`/contact?product=${encodeURIComponent(product.title)}`}
+                className="inline-flex items-center justify-center px-8 py-3 text-base font-bold text-white transition-all duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 hover:shadow-lg active:scale-95"
+              >
+                Request a Quote
+              </Link>
+            </div>
+
           </div>
           {/* Header Image */}
           <div className="flex-shrink-0 w-full md:w-1/3 lg:w-1/4">
             
-            {/* --- FIX: Using our new SafeImage component --- */}
             <SafeImage
               src={product.categoryImage}
               alt={`${product.title} category image`}
@@ -145,7 +153,6 @@ export default async function ProductPage({ params }: Props) {
               className="rounded-lg object-cover w-full h-auto aspect-[4/3] shadow-lg"
               fallbackText="Category Image"
             />
-            {/* --- END OF FIX --- */}
 
           </div>
         </div>
