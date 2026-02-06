@@ -447,7 +447,7 @@ const rawProducts: RawProduct[] = [
     slug: "wire-harness-connectors",
     title: "Wire Harness Connectors",
     description: "Over 50 types of connectors for automotive, industrial, and consumer electrical systems.",
-    categoryImage: "/images/wire-harness-connectors.jpg", // Add to /public/images/
+    categoryImage: "/connector.jpg.webp", // Add to /public/images/
     details: `
 Use Case:
 Used to join and organize multiple wires in automotive, industrial, and consumer electrical systems for secure and efficient connectivity.
@@ -516,7 +516,7 @@ We offer over 50 types including C110 Series, C90 Series, fuse connectors, cover
     slug: "pvc-granules",
     title: "P.V.C Granules",
     description: "RoHS and REACH certified PVC granules for wires, cables, automotive parts, and more.",
-    categoryImage: "/images/pvc-granules.jpg", // Add to /public/images/
+    categoryImage: "/pvc-granules.avif",  // Add to /public/images/
     details: `
 Use Case:
 Used in the manufacturing of wires, cables, automotive parts, pipes, and consumer electrical products.
@@ -576,7 +576,7 @@ Available in soft and rigid grades, customized for flame-retardant (FR), UV-resi
     slug: "terminal-pvc-sleeves",
     title: "Terminal PVC Sleeves",
     description: "Dip-moulded insulation covers for terminal wire ends in automotive and appliance wiring.",
-    categoryImage: "/images/terminal-sleeves.jpg", // Add to /public/images/
+    categoryImage: "/terminal.jpeg.webp", // Add to /public/images/
     details: `
 Use Case:
 Provides insulation and a secure fit to terminal wire ends in automotive, industrial, and appliance wiring.
@@ -635,7 +635,7 @@ We offer a wide range of types, including Flag Caps, Straight Caps, Battery Cove
     slug: "cable-ties",
     title: "Cable Ties",
     description: "RoHS certified cable ties for bundling, securing, and organizing.",
-    categoryImage: "/images/cable-ties.jpg", // Add to /public/images/
+    categoryImage: "/Cable Tie.png", // Add to /public/images/
     details: `
 Use Case:
 Used to bundle wires in electronics, secure components in vehicles, organize tools, and for general-purpose fastening.
@@ -671,7 +671,7 @@ Currently offered in 1000m spools (for continuous applications).
     slug: "silicone-braided-wire",
     title: "Silicone Braided Wire",
     description: "High-temperature wire with braided fiberglass for appliances, lighting, and industrial machinery.",
-    categoryImage: "/images/silicone-wire.jpg", // Add to /public/images/
+    categoryImage: "/silicon.jpg", // Add to /public/images/
     details: `
 Use Case:
 Used in high-temperature environments such as appliances, lighting systems, industrial machinery, and automotive wiring.
@@ -713,7 +713,7 @@ Offered in multiple colors (Red, Black, White, Blue, etc.), temperature ratings,
     slug: "cat-5-cable",
     title: "CAT 5 Cable",
     description: "RoHS/REACH certified cable for Ethernet networking, telephone, and data transmission.",
-    categoryImage: "/images/cat-5-cable.jpg", // Add to /public/images/
+    categoryImage: "/CAT 5.webp", // Add to /public/images/
     details: `
 Use Case:
 Used for Ethernet networking, telephone wiring, and data transmission in residential, commercial, and industrial setups.
@@ -757,7 +757,7 @@ Available in UTP (Unshielded) and STP (Shielded) types, solid or stranded cores,
     slug: "pvc-electrical-tape",
     title: "PVC Electrical Tape",
     description: "REACH and FR certified PVC tape for automobile wire harness and electrical applications.",
-    categoryImage: "/images/pvc-tape.jpg", // Add to /public/images/
+    categoryImage: "/tape.jpg", // Add to /public/images/
     details: `
 Use Case:
 Used in automobile wire harness and various electrical applications.
@@ -830,7 +830,7 @@ All tapes are REACH and FR (Flame Retardant) Certified.
     slug: "pvc-sleeves",
     title: "PVC Sleeves",
     description: "Insulation sleeves (including heat-shrink) for wire harnessing, panel wiring, and electronics.",
-    categoryImage: "/images/pvc-sleeves.jpg", // Add to /public/images/
+    categoryImage: "/pvc sleeves.jpg", // Add to /public/images/
     details: `
 Use Case:
 Used as insulation sleeve in wire harnessing, panel wiring, and electronics.
