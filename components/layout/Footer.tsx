@@ -151,11 +151,12 @@ const Footer = () => {
   const products = [
     { name: "PVC Granules", href: "/products/pvc-granules" },
     { name: "Cable Ties", href: "/products/cable-ties" },
-    { name: "Silicone Braided Wires", href: "/products/silicone-braided-wires" },
-    { name: "CAT 5 Cables", href: "/products/cat-5-cables" },
+    { name: "Silicone Braided Wires", href: "/products/silicone-braided-wire" },
+    { name: "CAT 5 Cables", href: "/products/cat-5-cable" },
     { name: "PVC Electrical Tape", href: "/products/pvc-electrical-tape" },
-    { name: "Terminal Sleeves", href: "/products/terminal-sleeves" },
-    { name: "Connectors & Harness", href: "/products/connectors-harness" },
+    { name: "Terminal Sleeves", href: "/products/terminal-pvc-sleeves" },
+    { name: "Connectors & Harness", href: "/products/wire-harness-connectors" },
+    { name: "P.V.C Sleeves", href: "/products/pvc-sleeves" },
   ];
 
   const unit1Url = "https://www.google.com/maps/search/?api=1&query=28.7429034,77.3001252";
