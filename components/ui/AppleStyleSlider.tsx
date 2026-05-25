@@ -372,7 +372,7 @@ const slides = [
   },
   {
     slug: "silicone-braided-wire",
-    image: "elec.png",
+    image: "silicon-fibre.png",
     title: "SILICONE WIRE",
     description: "Heat-resistant fiberglass braided wires for appliances and industrial machinery.",
     button: "Explore Wire Types",
@@ -380,7 +380,7 @@ const slides = [
   },
   {
     slug: "cat-5-cable",
-    image: "CAT5.png",
+    image: "cat-5.png",
     title: "CAT 5 CABLE",
     description: "High-speed data transmission cable for telecom and networking applications.",
     button: "See Networking Cables",
@@ -410,14 +410,6 @@ const slides = [
     button: "View Sleeve Sizes",
     category: "Insulation"
   },
-  {
-    slug: "wire-harness-connectors",
-    image: "wire harness connectors.png",
-    title: "WIRE CONNECTORS",
-    description: "Reliable connectors, grommets, and accessories for automotive and industrial wiring.",
-    button: "Explore Connectors",
-    category: "Connectivity"
-  }
 ];
 
 export default function AppleStyleSlider() {

@@ -223,6 +223,7 @@
 'use client';
 
 import React, { useState } from "react";
+import Link from 'next/link';
 import Image from "next/image";
 import { motion } from "framer-motion";
 // ✅ Added new icons
@@ -400,68 +401,85 @@ export default function AboutPage() {
       </motion.section>
 
       {/* CERTIFICATIONS - THEMED */}
-<section className="bg-background-card py-16 text-text-light">
+      <section className="bg-background-card py-16 text-text-light">
   <div className="container mx-auto px-6 lg:px-8 text-center">
 
     <h2 className="text-3xl font-extrabold uppercase tracking-wider text-secondary">
       Our Certifications
     </h2>
 
+    {/* RoHS and REACH are mentioned directly in the text here */}
     <p className="mt-4 text-text-secondary max-w-2xl mx-auto text-base leading-relaxed">
       SD Polymers is dedicated to quality and compliance. Our products are manufactured using{" "}
-      <strong className="text-text-light">RoHS</strong>,{" "}
-      <strong className="text-text-light">REACH</strong>, and{" "}
+      <strong className="text-text-light">RoHS</strong> and{" "}
+      <strong className="text-text-light">REACH</strong> compliant processes, along with{" "}
+      <strong className="text-text-light">ISO 9001, 14001, 45001</strong> and{" "}
       <strong className="text-text-light">UDYAM</strong> certified processes —
       ensuring safety, sustainability, and global reliability.
     </p>
 
-    <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center">
+    {/* Adjusted grid to 4 columns */}
+    <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center items-start">
 
-      {/* RoHS */}
+      {/* ISO 9001 Certified - Updated styling to match Udyam box */}
       <motion.div
-        className="bg-white rounded-lg shadow-md p-6 w-40 h-28 flex items-center justify-center transform transition-all duration-300 hover:scale-110"
-        whileHover={{ scale: 1.1 }}
+        className="bg-white rounded-2xl shadow-md p-3 w-40 h-56 flex items-center justify-center transition-all duration-300 hover:scale-105"
+        whileHover={{ scale: 1.05 }}
       >
-        <Image
-          src="/images/rohs.png"
-          alt="RoHS Certification"
-          width={100}
-          height={60}
-        />
+        <div className="relative w-full h-full">
+          <Image
+            src="/iso-9001.png"
+            alt="ISO 9001 Certified"
+            fill
+            className="object-contain"
+          />
+        </div>
       </motion.div>
 
-      {/* REACH */}
+      {/* ISO 14001 Certified - Updated styling to match Udyam box */}
       <motion.div
-        className="bg-white rounded-lg shadow-md p-6 w-40 h-28 flex items-center justify-center transform transition-all duration-300 hover:scale-110"
-        whileHover={{ scale: 1.1 }}
+        className="bg-white rounded-2xl shadow-md p-3 w-40 h-56 flex items-center justify-center transition-all duration-300 hover:scale-105"
+        whileHover={{ scale: 1.05 }}
       >
-        <Image
-          src="/images/reach.png"
-          alt="REACH Certification"
-          width={100}
-          height={60}
-        />
+        <div className="relative w-full h-full">
+          <Image
+            src="/iso-14001.png"
+            alt="ISO 14001 Certified"
+            fill
+            className="object-contain"
+          />
+        </div>
       </motion.div>
 
-      {/* UDYAM */}
-     {/* UDYAM */}
-<motion.div
-  className="bg-white rounded-2xl shadow-md p-3
-             w-40 h-56
-             flex items-center justify-center
-             transition-all duration-300"
-  whileHover={{ scale: 1.05 }}
->
-  <div className="relative w-full h-full">
-    <Image
-      src="/Udyam%20%20Certificate%20S%20D%20POLYMERS-1.jpg"
-      alt="UDYAM Certification"
-      fill
-      className="object-contain"
-    />
-  </div>
-</motion.div>
+      {/* ISO 45001 Certified - Updated styling to match Udyam box */}
+      <motion.div
+        className="bg-white rounded-2xl shadow-md p-3 w-40 h-56 flex items-center justify-center transition-all duration-300 hover:scale-105"
+        whileHover={{ scale: 1.05 }}
+      >
+        <div className="relative w-full h-full">
+          <Image
+            src="/iso-45001.png"
+            alt="ISO 45001 Certified"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </motion.div>
 
+      {/* UDYAM Certified */}
+      <motion.div
+        className="bg-white rounded-2xl shadow-md p-3 w-40 h-56 flex items-center justify-center transition-all duration-300"
+        whileHover={{ scale: 1.05 }}
+      >
+        <div className="relative w-full h-full">
+          <Image
+            src="/Udyam%20%20Certificate%20S%20D%20POLYMERS-1.jpg"
+            alt="UDYAM Certified"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </motion.div>
 
     </div>
 

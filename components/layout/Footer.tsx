@@ -258,7 +258,11 @@ const Footer = () => {
             © {new Date().getFullYear()} SD Polymers. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-xs text-text-secondary font-medium bg-background-card/50 px-4 py-2 rounded-full">
+            <span>ISO 45001:2018 Certified</span>
+            <span className="hidden sm:inline text-border-color/50">•</span>
             <span>ISO 9001:2015 Certified</span>
+            <span className="hidden sm:inline text-border-color/50">•</span>
+            <span>ISO 14001:2015 Certified</span>
             <span className="hidden sm:inline text-border-color/50">•</span>
             <span>REACH Compliant</span>
             <span className="hidden sm:inline text-border-color/50">•</span>
